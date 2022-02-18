@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import { fabric } from "fabric";
 
-const socket = io("http://localhost:8080")
+const socket = io("http://localhost:8080");
 
 // emitters
 export const emitAdd = (obj) => {
@@ -16,28 +16,28 @@ export const emitModify = (obj) => {
 export const addObj = (canvas) => {
   socket.off("new-add");
   socket.on("new-add", (data) => {
-    const { obj, id } = data;
+    const { obj, id, url } = data;
     let object;
+
+    console.log(obj.type);
 
     if (obj.type === "rect") {
       object = new fabric.Rect({
         height: obj.height,
         width: obj.width,
       });
-    } else if (obj.type === "circle") {
-      object = new fabric.Circle({
-        radius: obj.radius,
-      });
-    } else if (obj.type === "triangle") {
-      object = new fabric.Triangle({
-        width: obj.width,
-        height: obj.height,
+      object.set({ id: id });
+      canvas.add(object);
+      canvas.renderAll();
+    } else if (obj.type === "image") {
+      new fabric.Image.fromURL(url, (img) => {
+        console.log("receive", img._element.currentSrc);
+        img.set({ id: id });
+        img.scale(0.75);
+        canvas.add(img);
+        canvas.renderAll();
       });
     }
-
-    object.set({ id: id });
-    canvas.add(object);
-    canvas.renderAll();
   });
 };
 
