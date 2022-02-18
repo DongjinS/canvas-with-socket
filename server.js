@@ -10,7 +10,8 @@ const Server = require("socket.io").Server;
 // after we start listening to our server, we can set up and attach our socket.io server
 const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
+    credentials: true
   },
 });
 // in a separate file we'll get more specific about the events we want our socket server to listen for and broadcast
@@ -25,6 +26,11 @@ io.on("connection", (socket) => {
   
   socket.on("object-modified", (data) => {
     socket.broadcast.emit("new-modification", data);
+  });
+
+  socket.on("mousemove", (data) => {
+    console.log("receive mouse", data)
+    socket.broadcast.emit("new-mouse", data);
   });
 });
 

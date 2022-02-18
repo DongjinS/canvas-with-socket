@@ -12,6 +12,14 @@ export const emitModify = (obj) => {
   socket.emit("object-modified", obj);
 };
 
+export const emitMouse = (obj) => {
+  console.log("send", obj.clientX, obj.clientY);
+  socket.emit("mousemove", {
+    x: obj.clientX,
+    y: obj.clientY,
+  });
+};
+
 // listeners
 export const addObj = (canvas) => {
   socket.off("new-add");
@@ -51,6 +59,12 @@ export const modifyObj = (canvas) => {
         canvas.renderAll();
       }
     });
+  });
+};
+
+export const modifyMouse = (canvas) => {
+  socket.on("new-mouse", (data) => {
+    console.log("receive", data.x, data.y);
   });
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fabric } from "fabric";
-import { emitModify, emitAdd, modifyObj, addObj } from "./socket";
+import { emitMouse, emitModify, emitAdd, modifyObj, addObj, modifyMouse } from "./socket";
 import { v1 as uuid } from "uuid";
 
 const App = () => {
@@ -32,8 +32,17 @@ const App = () => {
         }
       });
 
+      canvas.on('mouse:move', function(options) {
+        const mouseobj = {
+          clientX: options.e.clientX, 
+          clientY: options.e.clientY
+        }
+        emitMouse(mouseobj);
+      });
+
       modifyObj(canvas);
       addObj(canvas);
+      modifyMouse(canvas);
     }
   }, [canvas]);
 
